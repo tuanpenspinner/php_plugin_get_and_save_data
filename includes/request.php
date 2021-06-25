@@ -1,4 +1,5 @@
 <?php
+include_once dirname(__FILE__) . '/../models/data.php';
 
 class RequestAPI {
     // get JSON array
@@ -67,7 +68,33 @@ class RequestAPI {
 
 
 if ($_GET['action']  == 'get_data' ){
-    echo 'aaaa';
-   echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
+    // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
+
+    $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
+
+    $data = new ProductData( $dataFromApi );
+    
+    if($data->create()) {
+        echo (
+            'Data Created');
+        
+        // echo json_encode(
+        //     array('message' => 'Data Created')
+        // );
+    } else {
+        echo (
+            'Data Not Created');
+            // echo json_encode(
+            // array('message' => 'Data Not Created')
+        
+    }
+
+    // $listing_id = $dataFromApi['listing_id'];
+
+    // $sql = "INSERT INTO dbp_api_data(listing_id)VALUES('$listing_id')";
+    // if(!mysql_query($sql))
+    // {
+    //     die('Error : ' . mysql_error());
+    // }
 }
 
