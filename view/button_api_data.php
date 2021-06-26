@@ -48,7 +48,8 @@
         });
         $('#get-api-button').click(function() {
             $.ajax({
-                url: "/wp-content/plugins/GET-DATA-API/includes/request.php", 
+                url: ajaxurl, 
+                // url: "/wp-content/plugins/GET-DATA-API/includes/request.php", 
                 type: "GET",
                 data:{action:'get_data'},
                 success: function(data) {

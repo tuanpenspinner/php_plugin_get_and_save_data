@@ -66,35 +66,41 @@ class RequestAPI {
    }
 }
 
+add_action('wp_ajax_get_data', 'get_data_ajax');
 
-if ($_GET['action']  == 'get_data' ){
-    // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
-
+function get_data_ajax() {
+    global $wpdb; // this is how you get access to the database
+  
     $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
+  
+    $data = new ProductData( $dataFromApi, $wpdb );
 
-    $data = new ProductData( $dataFromApi );
-    
-    if($data->create()) {
-        echo (
-            'Data Created');
-        
-        // echo json_encode(
-        //     array('message' => 'Data Created')
-        // );
-    } else {
-        echo (
-            'Data Not Created');
-            // echo json_encode(
-            // array('message' => 'Data Not Created')
-        
-    }
+    $data->insert_data();
+//   if($data->insert_data())  {
+//     echo "Thành công";
+//   } 
+//   else {
+//       echo "thất bại";
+//   }
 
-    // $listing_id = $dataFromApi['listing_id'];
+  }
+   
 
-    // $sql = "INSERT INTO dbp_api_data(listing_id)VALUES('$listing_id')";
-    // if(!mysql_query($sql))
-    // {
-    //     die('Error : ' . mysql_error());
-    // }
-}
+// if ($_GET['action']  == 'get_data' ){
+//     // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
+
+//     $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
+
+//     $data = new ProductData( $dataFromApi );
+//     $data->insert_data();
+
+
+//     // $listing_id = $dataFromApi['listing_id'];
+
+//     // $sql = "INSERT INTO dbp_api_data(listing_id)VALUES('$listing_id')";
+//     // if(!mysql_query($sql))
+//     // {
+//     //     die('Error : ' . mysql_error());
+//     // }
+// }
 

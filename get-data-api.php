@@ -19,6 +19,7 @@ define('GET_DATA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 require_once(GET_DATA_PLUGIN_DIR . 'includes/request.php');
 require_once(GET_DATA_PLUGIN_DIR . 'includes/connectDb.php');
+require_once(GET_DATA_PLUGIN_DIR . 'models/data.php');
 
 register_activation_hook( __FILE__, 'DBP_tb_create' );
 
@@ -27,24 +28,11 @@ class ProductListApi {
 
         // create menu in dashboard
         add_action("admin_menu", array($this, "create_menu"));
-
-        // add assets(js,css,etc)
-        add_action("wp_enqueue_scripts", array($this, "load_assets"));
         
-    }
-   
-    public function load_assets() {
-
-        wp_enqueue_style(
-            'get-data-api',
-            GET_DATA_PLUGIN_DIR . '/css/get-data-api.css',
-            array(),
-           'GET_DATA_VERSION'
-        );
     }
 
     public function create_menu() {
-        add_menu_page("Get Data From API", "Get Data From API", 4, "get-data-from-api", array($this,"front_end_dashboard"));
+        add_menu_page("Get Data From API", "Get Data From API", 'administrator', "get-data-from-api", array($this,"front_end_dashboard"));
     }
 
     public function front_end_dashboard() {
