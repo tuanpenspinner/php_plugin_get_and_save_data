@@ -31,16 +31,16 @@ class RequestAPI {
     } 
     return false;
    }
-
-   public static function get_products_list($region_arr = [], $limit_arr = []) {
-       if ($region_arr || $limit_arr) {
+//    ymwirwn29it7yeo77b6600na
+   public static function get_products_list($data_arr = [], $api_key) {
+       if ($data_arr) {
          $return = [];
-         foreach ($region_arr as $region) {
-             foreach ( $limit_arr as $limit) {
-                $url= "https://openapi.etsy.com/v2/listings/active?api_key=ymwirwn29it7yeo77b6600na&taxonomy_id=66&region=$region&limit=$limit";
+         foreach ($data_arr as $data) {
+
+                $url= urldecode("https://openapi.etsy.com/v2/listings/active?$api_key&taxonomy_id=66&limit=$data->limit&location=$data->region");
 
                 $cURL = curl_init();
-                curl_setopt($cURL, CURLOPT_URL, $url);
+                curl_setopt($cURL, CURLOPT_URL, $url );
                 curl_setopt($cURL, CURLOPT_HTTPGET, true);
                 curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
@@ -48,15 +48,15 @@ class RequestAPI {
                 ));
                 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($cURL);
-             
                 curl_close($cURL);
-             }
+             
          }
          if ($result) {
             return self::get_Json_data($result);
         } 
         
        }
+
        return false;
    }
    
@@ -71,11 +71,26 @@ add_action('wp_ajax_get_data', 'get_data_ajax');
 function get_data_ajax() {
     global $wpdb; // this is how you get access to the database
   
-    $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
-  
-    $data = new ProductData( $dataFromApi, $wpdb );
+    $arr_data = new stdClass;
+    $arr_data -> region = 'Vietnam';
+    $arr_data -> limit = '50';
 
-    $data->insert_data();
+    $api_key = $_GET["api_key"];
+    $type_handle_data = $_GET["type"];
+
+    $dataFromApi = RequestAPI::get_products_list(array( $arr_data ), $api_key);
+
+    $data = new ProductData( $dataFromApi );
+
+    if( $type_handle_data == 'new') {
+        $data->insert_data();
+    
+    } else if ($type_handle_data == 'delete') {
+        $data->insert_delete_data();
+    }
+    
+   
+    // $data->insert_data();
 
   }
    
