@@ -76,16 +76,9 @@ function get_data_ajax() {
     $data = new ProductData( $dataFromApi, $wpdb );
 
     $data->insert_data();
-//   if($data->insert_data())  {
-//     echo "Thành công";
-//   } 
-//   else {
-//       echo "thất bại";
-//   }
 
   }
    
-
 // if ($_GET['action']  == 'get_data' ){
 //     // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
 

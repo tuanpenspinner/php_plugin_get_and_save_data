@@ -56,7 +56,7 @@ function DBP_tb_create() {
 
 	$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
-    listing_id(20) int,
+    listing_id int (20) ,
 		PRIMARY KEY  (id)
 	) $charset_collate;";
 
