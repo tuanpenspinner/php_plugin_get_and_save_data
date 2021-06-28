@@ -158,7 +158,7 @@ function get_data_ajax() {
     $consumer_secret = ($_POST['data'][2]['value']); // in json 
 
     $dataFromApi = RequestAPI::get_products_list(array( $arr_data ), $api_key);
-    $dataAdd = RequestAPI::add_products(array( $dataFromApi  ),$consumer_key,$consumer_secret);
+    // $dataAdd = RequestAPI::add_products(array( $dataFromApi  ),$consumer_key,$consumer_secret);
 
 }
 
