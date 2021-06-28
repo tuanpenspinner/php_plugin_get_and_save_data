@@ -1,4 +1,10 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Automattic\WooCommerce\Client;
+
+
+
 
 class RequestAPI {
     // get JSON array
@@ -52,8 +58,9 @@ class RequestAPI {
                 curl_close($cURL);
              
          }
+         
          if ($result) {
-          
+        
             return self::get_Json_data($result);
          
         } 
@@ -62,7 +69,75 @@ class RequestAPI {
 
        return false;
    }
-   
+   public static function add_products($data_arr = [], $consumer_key,$consumer_secret) {
+    $woocommerce = new Client(
+        'http://localhost/tuannt', 
+        $consumer_key, 
+        $consumer_secret,
+        [
+            'wp_api' => true,
+            'version' => 'wc/v3'
+        ]
+    );
+    $data = [
+        'create' => [
+            [
+                'name' => 'Test ssf',
+                'type' => 'simple',
+                'regular_price' => '21.99',
+                'virtual' => true,
+                'downloadable' => true,
+                'downloads' => [
+                    [
+                        'name' => 'Woo Single',
+                        'file' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/cd_4_angle.jpg'
+                    ]
+                ],
+                'categories' => [
+                    [
+                        'id' => 11
+                    ],
+                    [
+                        'id' => 13
+                    ]
+                ],
+                'images' => [
+                    [
+                        'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/cd_4_angle.jpg'
+                    ]
+                ]
+            ],
+            [
+                'name' => 'New Premium Quality',
+                'type' => 'simple',
+                'regular_price' => '21.99',
+                'description' => 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
+                'short_description' => 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
+                'categories' => [
+                    [
+                        'id' => 9
+                    ],
+                    [
+                        'id' => 14
+                    ]
+                ],
+                'images' => [
+                    [
+                        'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg'
+                    ],
+                    [
+                        'src' => 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_back.jpg'
+                    ]
+                ]
+            ]
+        ]
+    ];
+    
+    print_r($woocommerce->post('products/batch', $data));
+    return false;
+    
+   }
+
 
    public static function get_image_product($listing_id) {
     return "https://openapi.etsy.com/v2/listings/{$listing_id}/images?api_key=ymwirwn29it7yeo77b6600na";
@@ -83,6 +158,8 @@ function get_data_ajax() {
     $consumer_secret = ($_POST['data'][2]['value']); // in json 
 
     $dataFromApi = RequestAPI::get_products_list(array( $arr_data ), $api_key);
-  
+    $dataAdd = RequestAPI::add_products(array( $dataFromApi  ),$consumer_key,$consumer_secret);
+
 }
+
 
