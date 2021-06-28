@@ -1,5 +1,4 @@
 <?php
-include_once dirname(__FILE__) . '/../models/data.php';
 
 class RequestAPI {
     // get JSON array
@@ -31,16 +30,16 @@ class RequestAPI {
     } 
     return false;
    }
-
-   public static function get_products_list($region_arr = [], $limit_arr = []) {
-       if ($region_arr || $limit_arr) {
+//    ymwirwn29it7yeo77b6600na
+   public static function get_products_list($data_arr = [], $api_key) {
+       if ($data_arr) {
          $return = [];
-         foreach ($region_arr as $region) {
-             foreach ( $limit_arr as $limit) {
-                $url= "https://openapi.etsy.com/v2/listings/active?api_key=ymwirwn29it7yeo77b6600na&taxonomy_id=66&region=$region&limit=$limit";
+         foreach ($data_arr as $data) {
+
+                $url= urldecode("https://openapi.etsy.com/v2/listings/active?api_key=$api_key&taxonomy_id=66&limit=$data->limit&location=$data->region");
 
                 $cURL = curl_init();
-                curl_setopt($cURL, CURLOPT_URL, $url);
+                curl_setopt($cURL, CURLOPT_URL, $url );
                 curl_setopt($cURL, CURLOPT_HTTPGET, true);
                 curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
@@ -48,15 +47,19 @@ class RequestAPI {
                 ));
                 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($cURL);
-             
+                echo  $result;
+
                 curl_close($cURL);
-             }
+             
          }
          if ($result) {
+          
             return self::get_Json_data($result);
+         
         } 
         
        }
+
        return false;
    }
    
@@ -71,29 +74,15 @@ add_action('wp_ajax_get_data', 'get_data_ajax');
 function get_data_ajax() {
     global $wpdb; // this is how you get access to the database
   
-    $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
+    $arr_data = new stdClass;
+    $arr_data -> region = 'Vietnam';
+    $arr_data -> limit = '50';
+
+    $api_key = ($_POST['data'][0]['value']); // in json 
+    $consumer_key = ($_POST['data'][1]['value']); // in json 
+    $consumer_secret = ($_POST['data'][2]['value']); // in json 
+
+    $dataFromApi = RequestAPI::get_products_list(array( $arr_data ), $api_key);
   
-    $data = new ProductData( $dataFromApi, $wpdb );
-
-    $data->insert_data();
-
-  }
-   
-// if ($_GET['action']  == 'get_data' ){
-//     // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
-
-//     $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
-
-//     $data = new ProductData( $dataFromApi );
-//     $data->insert_data();
-
-
-//     // $listing_id = $dataFromApi['listing_id'];
-
-//     // $sql = "INSERT INTO dbp_api_data(listing_id)VALUES('$listing_id')";
-//     // if(!mysql_query($sql))
-//     // {
-//     //     die('Error : ' . mysql_error());
-//     // }
-// }
+}
 

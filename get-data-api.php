@@ -19,7 +19,6 @@ define('GET_DATA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 require_once(GET_DATA_PLUGIN_DIR . 'includes/request.php');
 require_once(GET_DATA_PLUGIN_DIR . 'includes/connectDb.php');
-require_once(GET_DATA_PLUGIN_DIR . 'models/data.php');
 
 register_activation_hook( __FILE__, 'DBP_tb_create' );
 
