@@ -7,6 +7,17 @@
 <form id="get-api-button" method="post">
     <label>Etsy API Key</label>
     <input required type="text" name="api_key"/>
+
+    <p style="
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;">Woocommerce API Key</p>
+    <label>Consumer Key</label>
+    <input required type="text" name="consumer_key" style="margin-bottom:5px;"/>
+    <label>Consumer Secret</label>
+    <input required type="text" name="consumer_secret"/>
+
+
     <button type="submit" class="button-submit">Submit</button> 
 </form>
 
@@ -157,52 +168,30 @@
         $('#get-api-button').submit(function(e) {
             e.preventDefault();
 
-             data_input = $(this).serialize();
-
-             $("#modal-select-insertData").show();
-
+             data_input = $(this).serializeArray();
+             call_ajax( data_input );
             return false;
         })
 
-        $(".close").click(function() {
-            $("#modal-select-insertData").hide();
-        })
-
-        $("#insert-new").click(function() {
-            call_ajax(type="new");
-            $("#modal-select-insertData").hide();
-
-        })
-        $("#insert-delete").click(function() {
-            call_ajax(type="delete")
-            $("#modal-select-insertData").hide();
-
-        })
-     
     });
    
-    var modal = document.getElementById("modal-select-insertData");
-     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+  
       
-    }
+    
 
-function call_ajax(type) {
+function call_ajax(data_input) {
+    console.log("data_input >> ", data_input);
     jQuery(document).ready(function($){
 
         $.ajax({
                 url: ajaxurl, 
                 // url: "/wp-content/plugins/GET-DATA-API/includes/request.php", 
-                type: "GET",
+                type: "POST",
                 data:{
                     action:'get_data', 
-                    api_key: data_input,
-                    type
+                    data: data_input,
                     },
                 success: function(data) {
-                    console.log("data >> ", data);
                   
                     if (data === 'Error0') {
                         $('#show-data-api').html('Data not found. Please try again!');

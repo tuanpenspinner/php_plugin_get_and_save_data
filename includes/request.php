@@ -1,5 +1,4 @@
 <?php
-include_once dirname(__FILE__) . '/../models/data.php';
 
 class RequestAPI {
     // get JSON array
@@ -37,7 +36,7 @@ class RequestAPI {
          $return = [];
          foreach ($data_arr as $data) {
 
-                $url= urldecode("https://openapi.etsy.com/v2/listings/active?$api_key&taxonomy_id=66&limit=$data->limit&location=$data->region");
+                $url= urldecode("https://openapi.etsy.com/v2/listings/active?api_key=$api_key&taxonomy_id=66&limit=$data->limit&location=$data->region");
 
                 $cURL = curl_init();
                 curl_setopt($cURL, CURLOPT_URL, $url );
@@ -48,11 +47,15 @@ class RequestAPI {
                 ));
                 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($cURL);
+                echo  $result;
+
                 curl_close($cURL);
              
          }
          if ($result) {
+          
             return self::get_Json_data($result);
+         
         } 
         
        }
@@ -75,40 +78,11 @@ function get_data_ajax() {
     $arr_data -> region = 'Vietnam';
     $arr_data -> limit = '50';
 
-    $api_key = $_GET["api_key"];
-    $type_handle_data = $_GET["type"];
+    $api_key = ($_POST['data'][0]['value']); // in json 
+    $consumer_key = ($_POST['data'][1]['value']); // in json 
+    $consumer_secret = ($_POST['data'][2]['value']); // in json 
 
     $dataFromApi = RequestAPI::get_products_list(array( $arr_data ), $api_key);
-
-    $data = new ProductData( $dataFromApi );
-
-    if( $type_handle_data == 'new') {
-        $data->insert_data();
-    
-    } else if ($type_handle_data == 'delete') {
-        $data->insert_delete_data();
-    }
-    
-   
-    // $data->insert_data();
-
-  }
-   
-// if ($_GET['action']  == 'get_data' ){
-//     // echo '<pre>' .print_r(RequestAPI::get_products_list(['VN'], ['50'])).  '</pre>';die();
-
-//     $dataFromApi = RequestAPI::get_products_list(['VN'], ['50']);
-
-//     $data = new ProductData( $dataFromApi );
-//     $data->insert_data();
-
-
-//     // $listing_id = $dataFromApi['listing_id'];
-
-//     // $sql = "INSERT INTO dbp_api_data(listing_id)VALUES('$listing_id')";
-//     // if(!mysql_query($sql))
-//     // {
-//     //     die('Error : ' . mysql_error());
-//     // }
-// }
+  
+}
 
